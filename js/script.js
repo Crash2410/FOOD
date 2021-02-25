@@ -6,6 +6,7 @@ window.addEventListener('DOMContentLoaded', () => {
         tabsContent = document.querySelectorAll('.tabcontent'),
         tabsParent = document.querySelector('.tabheader__items');
 
+    // Скрываем табы и контент табов
     function hideTabContent() {
         tabsContent.forEach(item => {
             item.style.display = 'none';
@@ -16,6 +17,7 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Показываем табы и контент (по умолчанию показывается 1 таб с его контентом)
     function showTabContent(i = 0) {
         tabsContent[i].style.display = 'block';
         tabs[i].classList.add('tabheader__item_active');
@@ -24,6 +26,7 @@ window.addEventListener('DOMContentLoaded', () => {
     hideTabContent();
     showTabContent();
 
+    // Изменяем контент в табах при нажатии на категории 
     tabsParent.addEventListener('click', (event) => {
         const target = event.target;
 
@@ -41,6 +44,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     const deadline = '2021-05-27';
 
+    // Расчет осташегося времени
     function getTimeRemaining(endTime) {
         const t = Date.parse(endTime) - Date.parse(new Date()),
             days = Math.floor(t / (1000 * 60 * 60 * 24)),
@@ -57,6 +61,7 @@ window.addEventListener('DOMContentLoaded', () => {
         };
     }
 
+    // Установка 0, если значение не десятичное (06, вместо 6)
     function getZero(num) {
         if (num >= 0 && num < 10) {
             return `0${num}`;
@@ -65,6 +70,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Установка таймера
     function setClock(selector, endTime) {
         const timer = document.querySelector(selector),
             days = timer.querySelector('#days'),
@@ -75,6 +81,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
         updateClock();
 
+        // Обновление времени в таймере
         function updateClock() {
             const t = getTimeRemaining(endTime);
 
@@ -98,28 +105,54 @@ window.addEventListener('DOMContentLoaded', () => {
         closeModal = document.querySelector('[data-close]'),
         modal = document.querySelector('.modal');
 
+    // Функция открытия окна
+    function openModal() {
+        modal.style.display = 'block';
+        clearInterval(modalTimerId);
+    }
+
+    // Функция закрытия окна
+    function closeModals() {
+        modal.style.display = 'none';
+    }
+
+    // Открытие модального окна по кнопкам
     modalTrigger.forEach(item => {
         item.addEventListener('click', (e) => {
             e.preventDefault();
-
-            modal.style.display = 'block';
+            openModal();
         });
     });
 
-    closeModal.addEventListener('click', () => {
-        modal.style.display = 'none';
-    });
+    // Закрытие модального окна на кнопку 
+    closeModal.addEventListener('click', closeModals);
 
+    // Закрытие модального окна за его пределами
     modal.addEventListener('click', (e) => {
         if (e.target == modal) {
             modal.style.display = 'none';
         }
     });
 
+    // Закрытие модального окна на Escape
     document.addEventListener('keydown', (e) => {
         if (e.code == 'Escape' && getComputedStyle(modal).display == 'block') {
             modal.style.display = 'none';
         }
     });
 
+    // Таймер открытия модального окна
+    const modalTimerId = setTimeout(function () {
+        modal.style.display = 'block';
+    }, 5000);
+
+    // Открытие окна при скоролее на подвале(футере) страницы
+    function showModalByScroll() {
+        if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight - 1) {
+            openModal();
+            window.removeEventListener('scroll', showModalByScroll);
+        }
+    }
+
+    window.addEventListener('scroll', showModalByScroll);
 });
