@@ -1,7 +1,7 @@
 window.addEventListener('DOMContentLoaded', () => {
 
     // Tabs
-    
+
     const tabs = document.querySelectorAll('.tabheader__item'),
         tabsContent = document.querySelectorAll('.tabcontent'),
         tabsParent = document.querySelector('.tabheader__items');
@@ -91,4 +91,35 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     setClock('.timer', deadline);
+
+    // Modal
+
+    const modalTrigger = document.querySelectorAll('[data-modal]'),
+        closeModal = document.querySelector('[data-close]'),
+        modal = document.querySelector('.modal');
+
+    modalTrigger.forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+
+            modal.style.display = 'block';
+        });
+    });
+
+    closeModal.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+
+    modal.addEventListener('click', (e) => {
+        if (e.target == modal) {
+            modal.style.display = 'none';
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.code == 'Escape' && getComputedStyle(modal).display == 'block') {
+            modal.style.display = 'none';
+        }
+    });
+
 });
