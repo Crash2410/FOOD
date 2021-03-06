@@ -206,5 +206,57 @@ window.addEventListener('DOMContentLoaded', () => {
         'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.',
         430).addCard();
 
+    // Forms - Отправка форм на сервер 
+    const forms = document.querySelectorAll('form');
+
+    // Объект с сообщениями для пользователя
+    const message = {
+        loading: 'Загрузка',
+        success: 'Спасибо! Скоро мы с вами свяжимся',
+        failure: 'Что-то пошло не так.'
+    };
+
+    // Подключаем отправку форм к формам на странице
+    forms.forEach((item) => {
+        postData(item);
+    });
+
+    // Функция постинга данных
+    function postData(form) {
+        form.addEventListener('submit', (e) => {
+            // отключаем стандартные поведения браузера
+            e.preventDefault();
+
+            // создание блока для вывода сообщений пользователю
+            const statusMessage = document.createElement('div');
+            statusMessage.classList.add('status');
+            statusMessage.textContent = message.loading;
+            form.append(statusMessage);
+
+            // создаем и настраиваем запрос
+            const request = new XMLHttpRequest();
+            request.open('POST', '/server.php');
+            // request.setRequestHeader('Content-Type', 'multupart/form-data');
+
+            // формирование данных из формы
+            const formData = new FormData(form);
+            // отправляем данные 
+            request.send(formData);
+
+            request.addEventListener('load', () => {
+                if (request.status === 200) {
+                    console.log(request.response);
+                    statusMessage.textContent = message.success;
+                    form.reset();
+                    setTimeout(() => {
+                        statusMessage.remove();
+                    }, 2000);
+                } else {
+                    statusMessage.textContent = message.failure;
+                }
+            });
+
+        });
+    }
 
 });
