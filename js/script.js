@@ -215,11 +215,24 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Подключаем отправку форм к формам на странице
     forms.forEach((item) => {
-        postData(item);
+        bindPostData(item);
     });
 
-    // Функция постинга данных
-    function postData(form) {
+    // Постинг данных 
+    const postData = async (url, data) => {
+        const res = await fetch(url, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: data
+        });
+
+        return await res.json();
+    };
+
+    // Функция привязки постинга 
+    function bindPostData(form) {
         form.addEventListener('submit', (e) => {
             // отключаем стандартные поведения браузера
             e.preventDefault();
@@ -243,10 +256,13 @@ window.addEventListener('DOMContentLoaded', () => {
             const formData = new FormData(form);
 
             // преобразование FormData в JSON, путем перебора всех данных в FormData и добавлениях их в объект
-            const object = {};
-            formData.forEach((value, key) => {
-                object[key] = value;
-            });
+            // Старый вариант
+            // const object = {};
+            // formData.forEach((value, key) => {
+            //     object[key] = value;
+            // });
+            // Новый вариант
+            const json = JSON.stringify(Object.fromEntries(formData.entries()));
             // const json = JSON.stringify(object);
 
             // отправляем данные 
@@ -265,14 +281,15 @@ window.addEventListener('DOMContentLoaded', () => {
             // });
 
             /*Работа с сервером при помощи Fetch API*/
-            fetch('/server.php', {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(object)
-                })
-                .then(data => data.text())
+            // fetch('/server.php', {
+            //     method: "POST",
+            //     headers: {
+            //         'Content-Type': 'application/json'
+            //     },
+            //     body: JSON.stringify(object)
+            // });
+
+            postData('http://localhost:3000/requests', json)
                 .then(data => {
                     console.log(data);
                     showThanksModal(message.success);

@@ -1,0 +1,22 @@
+{
+  "name": "food",
+  "version": "1.0.0",
+  "description": "Home Project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Crash2410/FOOD.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Crash2410/FOOD/issues"
+  },
+  "homepage": "https://github.com/Crash2410/FOOD#readme",
+  "devDependencies": {
+    "json-server": "^0.16.3"
+  }
+}
