@@ -139,9 +139,9 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     // Таймер открытия модального окна
-    const modalTimerId = setTimeout(function () {
-        modal.style.display = 'block';
-    }, 50000);
+    // const modalTimerId = setTimeout(function () {
+    //     modal.style.display = 'block';
+    // }, 50000);
 
     // Открытие окна при скоролее на подвале(футере) страницы
     function showModalByScroll() {
@@ -207,7 +207,7 @@ window.addEventListener('DOMContentLoaded', () => {
             }) => {
                 new Cards(img, altimg, title, descr, price).addCard();
             });
-        }); 
+        });
 
     // Forms - Отправка форм на сервер 
     const forms = document.querySelectorAll('form');
@@ -333,5 +333,55 @@ window.addEventListener('DOMContentLoaded', () => {
             closeModals();
         }, 4000);
     }
+
+
+    // Слайдер
+
+    const sliders = document.querySelectorAll('.offer__slide'),
+        nextSlide = document.querySelector('.offer__slider-next'),
+        prevSlide = document.querySelector('.offer__slider-prev'),
+        currentCountSlide = document.querySelector('#current'),
+        totalCountSlide = document.querySelector('#total');
+
+    // Функция подсчитывающая побщее кол-во слайдов
+    function currentTotalCount() {
+        totalCountSlide.textContent = getZero(sliders.length);
+    }
+
+    let currentSlide = 1;
+
+    // Показ нужного слайда
+    function showSlide(n) {
+        if (n > sliders.length) {
+            currentSlide = 1;
+        }
+        if (n < 1) {
+            currentSlide = sliders.length;
+        }
+
+        sliders.forEach(slide => {
+            slide.style.display = 'none';
+        });
+
+        sliders[currentSlide - 1].style.display = 'block';
+        currentCountSlide.textContent = getZero(currentSlide);
+    }
+
+    showSlide(1);
+    currentTotalCount();
+
+    // Функция для перелистывания назад/вперед
+    function next(number) {
+        showSlide(currentSlide += number);
+    }
+
+    nextSlide.addEventListener('click', (e) => {
+        next(1);
+    });
+
+    prevSlide.addEventListener('click', (e) => {
+        next(-1);
+    });
+
 
 });
