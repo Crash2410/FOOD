@@ -335,13 +335,16 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // Слайдер
+    // Слайдер 'вариант 1'
 
     const sliders = document.querySelectorAll('.offer__slide'),
         nextSlide = document.querySelector('.offer__slider-next'),
         prevSlide = document.querySelector('.offer__slider-prev'),
         currentCountSlide = document.querySelector('#current'),
-        totalCountSlide = document.querySelector('#total');
+        totalCountSlide = document.querySelector('#total'),
+        slidesWrapper = document.querySelector('.offer__slider-wrapper'),
+        slidesField = document.querySelector('.offer__slider-inner'),
+        width = window.getComputedStyle(slidesWrapper).width;
 
     // Функция подсчитывающая побщее кол-во слайдов
     function currentTotalCount() {
@@ -349,39 +352,107 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     let currentSlide = 1;
+    let offset = 0; // отступ
 
     // Показ нужного слайда
-    function showSlide(n) {
-        if (n > sliders.length) {
-            currentSlide = 1;
-        }
-        if (n < 1) {
-            currentSlide = sliders.length;
-        }
+    // function showSlide(n) {
+    //     if (n > sliders.length) {
+    //         currentSlide = 1;
+    //     }
+    //     if (n < 1) {
+    //         currentSlide = sliders.length;
+    //     }
 
-        sliders.forEach(slide => {
-            slide.style.display = 'none';
-        });
+    //     sliders.forEach(slide => {
+    //         slide.style.display = 'none';
+    //     });
 
-        sliders[currentSlide - 1].style.display = 'block';
-        currentCountSlide.textContent = getZero(currentSlide);
-    }
+    //     sliders[currentSlide - 1].style.display = 'block';
+    //     currentCountSlide.textContent = getZero(currentSlide);
+    // }
 
-    showSlide(1);
+    // showSlide(1);
     currentTotalCount();
 
     // Функция для перелистывания назад/вперед
-    function next(number) {
-        showSlide(currentSlide += number);
+    // function next(number) {
+    //     showSlide(currentSlide += number);
+    // }
+
+    // nextSlide.addEventListener('click', (e) => {
+    //     next(1);
+    // });
+
+    // prevSlide.addEventListener('click', (e) => {
+    //     next(-1);
+    // });
+
+    // Слайдер 'вариант 2', карусель
+
+
+    if (sliders.length < 10) {
+        currentCountSlide.textContent = getZero(currentSlide);
+    } else {
+        currentCountSlide.textContent = currentSlide;
     }
 
-    nextSlide.addEventListener('click', (e) => {
-        next(1);
+
+    // Задаем обвертке ширину всех слайдеров и добавляем стили для правильного отображения слайдов
+    slidesField.style.width = 100 * sliders.length + '%';
+    slidesField.style.display = 'flex';
+    slidesField.style.transition = '0.5s all';
+
+    // Скрываем слайдеры которые не попадают в область видимости wrapper`а
+    slidesWrapper.style.overflow = 'hidden';
+
+    sliders.forEach(slide => {
+        slide.style.width = width;
     });
 
-    prevSlide.addEventListener('click', (e) => {
-        next(-1);
+    nextSlide.addEventListener('click', () => {
+        if (offset == +width.slice(0, width.length - 2) * (sliders.length - 1)) {
+            offset = 0;
+        } else {
+            offset += +width.slice(0, width.length - 2);
+        }
+
+        // вычисляем на сколько сдвинится блок
+        slidesField.style.transform = `translateX(-${offset}px)`;
+
+        if (currentSlide == sliders.length) {
+            currentSlide = 1;
+        } else {
+            currentSlide++;
+        }
+
+        if (sliders.length < 10) {
+            currentCountSlide.textContent = getZero(currentSlide);
+        } else {
+            currentCountSlide.textContent = currentSlide;
+        }
     });
 
+    prevSlide.addEventListener('click', () => {
+
+        if (offset == 0) {
+            offset = +width.slice(0, width.length - 2) * (sliders.length - 1);
+        } else {
+            offset -= +width.slice(0, width.length - 2);
+        }
+        // вычисляем на сколько сдвинится блок
+        slidesField.style.transform = `translateX(-${offset}px)`;
+
+        if (currentSlide == 1) {
+            currentSlide = sliders.length;
+        } else {
+            currentSlide--;
+        }
+
+        if (sliders.length < 10) {
+            currentCountSlide.textContent = getZero(currentSlide);
+        } else {
+            currentCountSlide.textContent = currentSlide;
+        }
+    });
 
 });
