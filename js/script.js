@@ -338,6 +338,7 @@ window.addEventListener('DOMContentLoaded', () => {
     // Слайдер 'вариант 1'
 
     const sliders = document.querySelectorAll('.offer__slide'),
+        slider = document.querySelector('.offer__slider'),
         nextSlide = document.querySelector('.offer__slider-next'),
         prevSlide = document.querySelector('.offer__slider-prev'),
         currentCountSlide = document.querySelector('#current'),
@@ -388,14 +389,58 @@ window.addEventListener('DOMContentLoaded', () => {
     // });
 
     // Слайдер 'вариант 2', карусель
+    // Навигация для слайдера
 
+    slider.style.position = 'relative';
+    const indicators = document.createElement('ol'),
+        dots = [];
+    indicators.classList.add('carousel-indicators');
+    indicators.style.cssText = `
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 15;
+        display: flex;
+        justify-content: center;
+        margin-right: 15%;
+        margin-left: 15%;
+        list-style: none;
+    `;
+    slider.append(indicators);
+
+    for (let i = 0; i < sliders.length; i++) {
+        const dot = document.createElement('li');
+        dot.setAttribute('data-slide-to', i + 1);
+        dot.style.cssText = `
+            box-sizing: content-box;
+            flex: 0 1 auto;
+            width: 30px;
+            height: 6px;
+            margin-right: 3px;
+            margin-left: 3px;
+            cursor: pointer;
+            background-color: #fff;
+            background-clip: padding-box;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            opacity: .5;
+            transition: opacity .6s ease;
+        `;
+
+        if (i == 0) {
+            dot.style.opacity = 1;
+        }
+
+        indicators.append(dot);
+        dots.push(dot);
+    }
 
     if (sliders.length < 10) {
         currentCountSlide.textContent = getZero(currentSlide);
     } else {
         currentCountSlide.textContent = currentSlide;
     }
-
 
     // Задаем обвертке ширину всех слайдеров и добавляем стили для правильного отображения слайдов
     slidesField.style.width = 100 * sliders.length + '%';
@@ -408,6 +453,7 @@ window.addEventListener('DOMContentLoaded', () => {
     sliders.forEach(slide => {
         slide.style.width = width;
     });
+
 
     nextSlide.addEventListener('click', () => {
         if (offset == +width.slice(0, width.length - 2) * (sliders.length - 1)) {
@@ -430,6 +476,11 @@ window.addEventListener('DOMContentLoaded', () => {
         } else {
             currentCountSlide.textContent = currentSlide;
         }
+
+        dots.forEach(dot => {
+            dot.style.opacity = '.5';
+        });
+        dots[currentSlide - 1].style.opacity = 1;
     });
 
     prevSlide.addEventListener('click', () => {
@@ -453,6 +504,33 @@ window.addEventListener('DOMContentLoaded', () => {
         } else {
             currentCountSlide.textContent = currentSlide;
         }
+
+        dots.forEach(dot => {
+            dot.style.opacity = '.5';
+        });
+        dots[currentSlide - 1].style.opacity = 1;
     });
 
+    // Перелистывание слайдов при нажатии на кнопки навигации
+    dots.forEach(dot => {
+        dot.addEventListener('click', (e) => {
+            const slideTo = e.target.getAttribute('data-slide-to');
+
+            currentSlide = slideTo;
+            offset = +width.slice(0, width.length - 2) * (slideTo - 1);
+
+            slidesField.style.transform = `translateX(-${offset}px)`;
+
+            if (sliders.length < 10) {
+                currentCountSlide.textContent = getZero(currentSlide);
+            } else {
+                currentCountSlide.textContent = currentSlide;
+            }
+
+            dots.forEach(dot => {
+                dot.style.opacity = '.5';
+            });
+            dots[currentSlide - 1].style.opacity = 1;
+        });
+    });
 });
