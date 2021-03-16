@@ -533,4 +533,80 @@ window.addEventListener('DOMContentLoaded', () => {
             dots[currentSlide - 1].style.opacity = 1;
         });
     });
+
+    // Калькулятор 
+
+    const result = document.querySelector('.calculating__result span');
+    let sex = 'female',
+        height, weight, age, ratio = '1.375';
+
+    // Полные расчеты по формулам
+    function calcTotal() {
+        // предусматриваем, чтобы были введены все данные для получения расчета
+        if (!sex || !height || !weight || !age || !ratio) {
+            result.textContent = '___';
+            return;
+        }
+
+        // настройка расчетов по формулам, для каждого из полов
+        if (sex === 'female') {
+            result.textContent = Math.round((447.6 + (9.2 * weight) + (3.1 * height) - (4.3 * age))) * ratio;
+        } else {
+            result.textContent = Math.round((88.36 + (13.4 * weight) + (4.8 * height) - (5.7 * age))) * ratio;
+        }
+    }
+
+    calcTotal();
+
+    // Получаем информацию с блоков "физической активности" и "пол"
+    function getStaticInformation(parentSelector, activeClass) {
+        const elements = document.querySelectorAll(`${parentSelector} div`);
+
+        elements.forEach(elem => {
+            elem.addEventListener('click', (e) => {
+                if (e.target.getAttribute('data-ratio')) {
+                    ratio = +e.target.getAttribute('data-ratio');
+                } else {
+                    sex = e.target.getAttribute('id');
+                }
+
+                console.log(ratio, sex);
+
+                elements.forEach((elem) => {
+                    elem.classList.remove(activeClass);
+                });
+
+                e.target.classList.add(activeClass);
+
+                calcTotal();
+            });
+        });
+    }
+
+    getStaticInformation('#gender', 'calculating__choose-item_active');
+    getStaticInformation('.calculating__choose_big', 'calculating__choose-item_active');
+
+    // Функция обработки инпутов
+    function getDinamicInformation(selector) {
+        const input = document.querySelector(selector);
+
+        input.addEventListener('input', (e) => {
+            switch (input.getAttribute('id')) {
+                case 'height':
+                    height = +input.value;
+                    break;
+                case 'weight':
+                    weight = +input.value;
+                    break;
+                case 'age':
+                    age = +input.value;
+                    break;
+            }
+            calcTotal();
+        });
+    }
+
+    getDinamicInformation('#height');
+    getDinamicInformation('#weight');
+    getDinamicInformation('#age');
 });
