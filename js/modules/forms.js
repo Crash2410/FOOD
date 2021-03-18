@@ -1,6 +1,14 @@
-function forms() {
+import {
+    closeModals,
+    openModal
+} from './modals';
+import {
+    postData
+} from '../services/services';
+
+function forms(formSelector, modalTimerId) {
     // Forms - Отправка форм на сервер 
-    const forms = document.querySelectorAll('form');
+    const forms = document.querySelectorAll(formSelector);
 
     // Объект с сообщениями для пользователя
     const message = {
@@ -13,19 +21,6 @@ function forms() {
     forms.forEach((item) => {
         bindPostData(item);
     });
-
-    // Постинг данных на сервер
-    const postData = async (url, data) => {
-        const res = await fetch(url, {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: data
-        });
-
-        return await res.json();
-    };
 
     // Функция привязки постинга 
     function bindPostData(form) {
@@ -100,12 +95,12 @@ function forms() {
         });
     }
 
-      // Модальное окно благорадности 
-      function showThanksModal(message) {
+    // Модальное окно благорадности 
+    function showThanksModal(message) {
         const prevModalDialog = document.querySelector('.modal__dialog');
 
         prevModalDialog.style.display = 'none';
-        openModal();
+        openModal('.modal', modalTimerId);
 
         const thanksModal = document.createElement('div');
         thanksModal.classList.add('modal__dialog');
@@ -120,9 +115,9 @@ function forms() {
         setTimeout(() => {
             thanksModal.remove();
             prevModalDialog.style.display = 'block';
-            closeModals();
+            closeModals('.modal');
         }, 4000);
     }
 }
 
-module.exports = forms;
+export default forms;

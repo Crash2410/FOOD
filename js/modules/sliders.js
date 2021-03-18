@@ -1,14 +1,23 @@
-function sliders() {
+function sliders({
+    container,
+    slide,
+    nextArrow,
+    prevArrow,
+    totalCounter,
+    currentCounter,
+    wrapper,
+    field
+}) {
     // Слайдер 'вариант 1'
 
-    const sliders = document.querySelectorAll('.offer__slide'),
-        slider = document.querySelector('.offer__slider'),
-        nextSlide = document.querySelector('.offer__slider-next'),
-        prevSlide = document.querySelector('.offer__slider-prev'),
-        currentCountSlide = document.querySelector('#current'),
-        totalCountSlide = document.querySelector('#total'),
-        slidesWrapper = document.querySelector('.offer__slider-wrapper'),
-        slidesField = document.querySelector('.offer__slider-inner'),
+    const sliders = document.querySelectorAll(slide),
+        slider = document.querySelector(container),
+        nextSlide = document.querySelector(nextArrow),
+        prevSlide = document.querySelector(prevArrow),
+        currentCountSlide = document.querySelector(currentCounter),
+        totalCountSlide = document.querySelector(totalCounter),
+        slidesWrapper = document.querySelector(wrapper),
+        slidesField = document.querySelector(field),
         width = window.getComputedStyle(slidesWrapper).width;
 
     // Функция подсчитывающая побщее кол-во слайдов
@@ -207,4 +216,4 @@ list-style: none;
     });
 }
 
-module.exports = sliders;
+export default sliders;

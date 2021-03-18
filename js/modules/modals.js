@@ -1,57 +1,62 @@
-function modals() {
-    // Modal
+ // Функция открытия окна
+ function openModal(modalSelector, modalTimerId) {
+     const modal = document.querySelector(modalSelector);
+     modal.style.display = 'block';
 
-    const modalTrigger = document.querySelectorAll('[data-modal]'),
-        modal = document.querySelector('.modal');
+     if (modalTimerId) {
+         clearInterval(modalTimerId);
+     }
+ }
 
-    // Функция открытия окна
-    function openModal() {
-        modal.style.display = 'block';
-        clearInterval(modalTimerId);
-    }
+ // Функция закрытия окна
+ function closeModals(modalSelector) {
+     const modal = document.querySelector(modalSelector);
+     modal.style.display = 'none';
+ }
 
-    // Функция закрытия окна
-    function closeModals() {
-        modal.style.display = 'none';
-    }
+ function modals(triggerSelector, modalSelector, modalTimerId) {
+     // Modal
+     const modalTrigger = document.querySelectorAll(triggerSelector),
+         modal = document.querySelector(modalSelector);
 
-    // Открытие модального окна по кнопкам
-    modalTrigger.forEach(item => {
-        item.addEventListener('click', (e) => {
-            e.preventDefault();
-            openModal();
-        });
-    });
+     // Открытие модального окна по кнопкам
+     modalTrigger.forEach(item => {
+         item.addEventListener('click', (e) => {
+             e.preventDefault();
+             openModal(modalSelector, modalTimerId);
+         });
+     });
 
-    // Закрытие модального окна за его пределами
-    modal.addEventListener('click', (e) => {
-        if (e.target == modal || e.target.getAttribute('data-close') == '') {
-            modal.style.display = 'none';
-        }
-    });
+     // Закрытие модального окна за его пределами
+     modal.addEventListener('click', (e) => {
+         if (e.target == modal || e.target.getAttribute('data-close') == '') {
+             closeModals(modalSelector);
+         }
+     });
 
-    // Закрытие модального окна на Escape
-    document.addEventListener('keydown', (e) => {
-        if (e.code == 'Escape' && getComputedStyle(modal).display == 'block') {
-            modal.style.display = 'none';
-        }
-    });
+     // Закрытие модального окна на Escape
+     document.addEventListener('keydown', (e) => {
+         if (e.code == 'Escape' && getComputedStyle(modal).display == 'block') {
+             closeModals(modalSelector);
+         }
+     });
 
-    // Таймер открытия модального окна
-    // const modalTimerId = setTimeout(function () {
-    //     modal.style.display = 'block';
-    // }, 50000);
+     // Открытие окна при скоролее на подвале(футере) страницы
+     function showModalByScroll() {
+         if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight - 1) {
+             openModal(modalSelector, modalTimerId);
+             window.removeEventListener('scroll', showModalByScroll);
+         }
+     }
 
-    // Открытие окна при скоролее на подвале(футере) страницы
-    function showModalByScroll() {
-        if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight - 1) {
-            openModal();
-            window.removeEventListener('scroll', showModalByScroll);
-        }
-    }
+     window.addEventListener('scroll', showModalByScroll);
 
-    window.addEventListener('scroll', showModalByScroll);
+ }
 
-}
-
-module.exports = modals;
+ export default modals;
+ export {
+     closeModals
+ };
+ export {
+     openModal
+ };
